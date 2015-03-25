@@ -66,6 +66,20 @@ static void usage(const char *program)
 	fprintf(stderr, "  -M MODULE  open the given module\n");
 }
 
+static const char *drivers[] = {
+	"i915",
+	"radeon",
+	"nouveau",
+	"vmwgfx",
+	"exynos",
+	"amdgpu",
+	"imx-drm",
+	"rockchip",
+	"atmel-hlcdc",
+	"mediatek",
+	NULL
+};
+
 int main(int argc, char** argv)
 {
 	static const char optstr[] = "D:M:";
