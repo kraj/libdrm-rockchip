@@ -915,15 +915,24 @@ int drmHandleEvent(int fd, drmEventContextPtr evctx)
 					      U642VOID (vblank->user_data));
 			break;
 		case DRM_EVENT_FLIP_COMPLETE:
-			if (evctx->version < 2 ||
-			    evctx->page_flip_handler == NULL)
+			if (evctx->version < 2)
 				break;
 			vblank = (struct drm_event_vblank *) e;
-			evctx->page_flip_handler(fd,
-						 vblank->sequence,
-						 vblank->tv_sec,
-						 vblank->tv_usec,
-						 U642VOID (vblank->user_data));
+
+			if (evctx->version >= 3 && evctx->page_flip_handler2 &&
+			    (vblank->crtc_id || !evctx->page_flip_handler))
+				evctx->page_flip_handler2(fd,
+							  vblank->crtc_id,
+							  vblank->sequence,
+							  vblank->tv_sec,
+							  vblank->tv_usec,
+							  U642VOID (vblank->user_data));
+			else if (evctx->page_flip_handler)
+				evctx->page_flip_handler(fd,
+							 vblank->sequence,
+							 vblank->tv_sec,
+							 vblank->tv_usec,
+							 U642VOID (vblank->user_data));
 			break;
 		default:
 			break;

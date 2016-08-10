@@ -915,8 +915,8 @@ static void set_property(struct device *dev, struct property_arg *p)
 /* -------------------------------------------------------------------------- */
 
 static void
-page_flip_handler(int fd, unsigned int frame,
-		  unsigned int sec, unsigned int usec, void *data)
+page_flip_handler2(int fd, unsigned int crtc_id, unsigned int frame,
+		   unsigned int sec, unsigned int usec, void *data)
 {
 	struct pipe_arg *pipe;
 	unsigned int new_fb_id;
@@ -928,6 +928,8 @@ page_flip_handler(int fd, unsigned int frame,
 		new_fb_id = pipe->fb_id[1];
 	else
 		new_fb_id = pipe->fb_id[0];
+
+	assert(crtc_id == pipe->crtc->crtc->crtc_id);
 
 	drmModePageFlip(fd, pipe->crtc->crtc->crtc_id, new_fb_id,
 			DRM_MODE_PAGE_FLIP_EVENT, pipe);
@@ -941,6 +943,19 @@ page_flip_handler(int fd, unsigned int frame,
 		pipe->swap_count = 0;
 		pipe->start = end;
 	}
+}
+
+static void
+page_flip_handler(int fd, unsigned int frame,
+		  unsigned int sec, unsigned int usec, void *data)
+{
+	struct pipe_arg *pipe = data;
+	static int once = 0;
+
+	if (!once++)
+		fprintf(stderr, "kernel doesn't pass crtc_id, or using older libdrm\n");
+
+	page_flip_handler2(fd, pipe->crtc->crtc->crtc_id, frame, sec, usec, data);
 }
 
 static bool format_support(const drmModePlanePtr ovr, uint32_t fmt)
@@ -1245,6 +1260,7 @@ static void test_page_flip(struct device *dev, struct pipe_arg *pipes, unsigned 
 	evctx.version = DRM_EVENT_CONTEXT_VERSION;
 	evctx.vblank_handler = NULL;
 	evctx.page_flip_handler = page_flip_handler;
+	evctx.page_flip_handler2 = page_flip_handler2;
 
 	while (1) {
 #if 0

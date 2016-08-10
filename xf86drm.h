@@ -728,7 +728,7 @@ extern void drmMsg(const char *format, ...) DRM_PRINTFLIKE(1, 2);
 extern int drmSetMaster(int fd);
 extern int drmDropMaster(int fd);
 
-#define DRM_EVENT_CONTEXT_VERSION 2
+#define DRM_EVENT_CONTEXT_VERSION 3
 
 typedef struct _drmEventContext {
 
@@ -748,6 +748,20 @@ typedef struct _drmEventContext {
 				  unsigned int tv_usec,
 				  void *user_data);
 
+	/*
+	 * Page flip handler used when kernel supports passing crtc_id
+	 * to userspace.
+	 *
+	 * If the kernel doesn't support passing crtc_id, the old
+	 * page_flip_handler() member will be called if set,
+	 * if it's NULL, this function will be called with crtc_id set to 0.
+	 */
+	void (*page_flip_handler2)(int fd,
+				   unsigned int crtc_id,
+				   unsigned int sequence,
+				   unsigned int tv_sec,
+				   unsigned int tv_usec,
+				   void *user_data);
 } drmEventContext, *drmEventContextPtr;
 
 extern int drmHandleEvent(int fd, drmEventContextPtr evctx);
