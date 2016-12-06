@@ -61,6 +61,7 @@ endif
 # Freedreno is on arm and arm64
 ifneq (,$(filter arm arm64,$(DEB_HOST_ARCH_CPU)))
 	FREEDRENO = yes
+	confflags += --enable-rockchip-experimental-api 
 endif
 ifeq ($(FREEDRENO), yes)
 	confflags += --enable-freedreno --enable-freedreno-kgsl
