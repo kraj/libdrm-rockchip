@@ -123,9 +123,9 @@
 #define DRM_FORMAT_NV24_10	fourcc_code('N', 'A', '2', '4') /* non-subsampled Cr:Cb plane */
 #define DRM_FORMAT_NV42_10	fourcc_code('N', 'A', '4', '2') /* non-subsampled Cb:Cr plane */
 
-#define DRM_FORMAT_P010		fourcc_code('P', '0', '1', '0') /* 2x2 subsampled Cb:Cr plane 10 bits per channel */
-#define DRM_FORMAT_P012		fourcc_code('P', '0', '1', '2') /* 2x2 subsampled Cb:Cr plane 12 bits per channel */
-#define DRM_FORMAT_P016		fourcc_code('P', '0', '1', '6') /* 2x2 subsampled Cb:Cr plane 16 bits per channel */
+#define DRM_FORMAT_P010		fourcc_code('P', '0', '1', '0') /* 2x2 subsampled Cr:Cb plane 10 bits per channel */
+#define DRM_FORMAT_P012		fourcc_code('P', '0', '1', '2') /* 2x2 subsampled Cr:Cb plane 12 bits per channel */
+#define DRM_FORMAT_P016		fourcc_code('P', '0', '1', '6') /* 2x2 subsampled Cr:Cb plane 16 bits per channel */
 
 /*
  * 3 plane YCbCr
@@ -167,6 +167,7 @@
 #define DRM_FORMAT_MOD_VENDOR_SAMSUNG 0x04
 #define DRM_FORMAT_MOD_VENDOR_QCOM    0x05
 #define DRM_FORMAT_MOD_VENDOR_ARM     0x06
+#define DRM_FORMAT_MOD_VENDOR_ROCKCHIP 0x07
 /* add more to the end as needed */
 
 #define fourcc_mod_code(vendor, val) \
@@ -246,5 +247,7 @@
  *
  */
 #define DRM_FORMAT_MOD_ARM_AFBC	fourcc_mod_code(ARM, 1)
+
+#define DRM_FORMAT_MOD_ROCKCHIP_10BITS fourcc_mode_code(ROCKCHIP,1)
 
 #endif /* DRM_FOURCC_H */
